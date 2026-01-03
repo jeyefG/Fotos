@@ -4,14 +4,13 @@
 Este archivo aplica a todo el repositorio.
 
 ## Resumen del proyecto
-`V6_auto.py` es un script de Python que busca fotos duplicadas usando *perceptual hashing* (`imagehash.phash`). Recorre una carpeta origen, agrupa imágenes por hash, elige una “preferida” por **mayor resolución** y, si hay empate, por **fecha EXIF más antigua**. Copia la preferida a una estructura de salida por **año/mes** y mueve los duplicados a una carpeta de descartes. No elimina archivos: **mueve** duplicados a la carpeta de descartadas y **copia** la preferida a la carpeta de limpias.
+`V6_auto.py` es un script de Python que busca fotos duplicadas usando *perceptual hashing* (combinación de `imagehash.phash` y `imagehash.colorhash`). Recorre una carpeta origen, agrupa imágenes por hash, elige una “preferida” por **mayor resolución** y, si hay empate, por **fecha EXIF más antigua**. No elimina archivos: **mueve** duplicados a una carpeta de descartes con ruta espejo a la original.
 
 ## Ejecución
 - Punto de entrada: `procesar_y_organizar(ruta_origen)` en `V6_auto.py`.
 - `ruta_origen` está definido al final del archivo y se usa en `__main__`.
-- Salidas por defecto:
-  - `Fotos_Limpias/AAAA/MM` (copias)
-  - `Fotos_Eliminadas/` (movidos)
+- Salida por defecto:
+  - `Fotos_a_Eliminar/` (movidos con ruta espejo dentro de `ruta_origen`)
 
 ## Dependencias
 - Python 3
@@ -19,14 +18,11 @@ Este archivo aplica a todo el repositorio.
 
 ## Comportamiento y criterios clave
 - Formatos soportados: `.jpg`, `.jpeg`, `.png`.
-- Agrupación: por `imagehash.phash`.
+- Agrupación: por combinación de `imagehash.phash` (hash_size=16) y `imagehash.colorhash`.
 - Preferencia dentro de un grupo:
   1. Mayor resolución (ancho × alto).
   2. Fecha EXIF más antigua (`DateTimeOriginal`).
-- Organización por fecha EXIF:
-  - Si hay EXIF: `Fotos_Limpias/<año>/<mes>`.
-  - Si no hay EXIF: `Fotos_Limpias/SinFecha/SinFecha`.
-- Duplicados se **mueven** con prefijo `grupo<N>_` al nombre.
+- Duplicados se **mueven** con prefijo `grupo<N>_` al nombre, manteniendo la ruta espejo bajo `Fotos_a_Eliminar/`.
 
 ## Buenas prácticas de edición
 - Si se cambia el criterio de selección o agrupación, actualizar este archivo.
